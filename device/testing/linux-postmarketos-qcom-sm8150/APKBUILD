@@ -1,7 +1,7 @@
 # Co-Maintainer: Viola Guerrera <guerrera.nicola@gmail.com>
 maintainer="Pan Ortiz <panjeoc@proton.me>"
 _flavor="postmarketos-qcom-sm8150"
-pkgname=linux-
+pkgname=linux-$_flavor
 pkgver=6.17.0
 pkgrel=3
 pkgdesc="Mainline Kernel fork for SM8150 devices"
@@ -26,48 +26,48 @@ makedepends="
 	python3
 	"
 
-_tag="v-sm8150"
+_tag="v$pkgver-sm8150"
 
 # Source
 source="
-	linux-.tar.gz::/-/archive//linux-.tar.gz
-	config-.
+	linux-$_tag.tar.gz::$url/-/archive/$_tag/linux-$_tag.tar.gz
+	config-$_flavor.$arch
 	0001-lid-switch-fix.patch
 	0002-enable-ufs.patch
 	0003-fix-llvm-build.patch
 	0004-dts-cepheus-fix-ufs-vcc-voltage.patch
 	0005-panel-sofef00-move-dcs-init-to-enable.patch
 "
-builddir="/linux-"
+builddir="$srcdir/linux-$_tag"
 
 prepare() {
 	default_prepare
-	cp "/config-." .config
+	cp "$srcdir/config-$_flavor.$arch" .config
 }
 
 build() {
 	unset LDFLAGS
-	make ARCH="" LLVM=1 		KBUILD_BUILD_VERSION="1-"
+	make ARCH="$_carch" LLVM=1 		KBUILD_BUILD_VERSION="$((pkgrel + 1 ))-$_flavor"
 }
 
 package() {
-	if [ -e "/arch//boot/vmlinuz.efi" ]; then
-		install -Dm644 "/arch//boot/vmlinuz.efi" 			"/boot/linux.efi"
-		install -Dm644 "/arch//boot/vmlinuz" 			"/boot/vmlinuz"
+	if [ -e "$builddir/arch/$_carch/boot/vmlinuz.efi" ]; then
+		install -Dm644 "$builddir/arch/$_carch/boot/vmlinuz.efi" 			"$pkgdir/boot/linux.efi"
+		install -Dm644 "$builddir/arch/$_carch/boot/vmlinuz" 			"$pkgdir/boot/vmlinuz"
 	else
 		echo "WARNING: CONFIG_ZBOOT not enabled!"
-		install -Dm644 "/arch//boot/Image.gz" 			"/boot/vmlinuz"
+		install -Dm644 "$builddir/arch/$_carch/boot/Image.gz" 			"$pkgdir/boot/vmlinuz"
 	fi
 
-	make modules_install dtbs_install 		ARCH="" 		LLVM=1 		INSTALL_PATH=""/boot/ 		INSTALL_MOD_PATH="" 		INSTALL_MOD_STRIP=1 		INSTALL_DTBS_PATH=""/boot/dtbs-tmp
+	make modules_install dtbs_install 		ARCH="$_carch" 		LLVM=1 		INSTALL_PATH="$pkgdir"/boot/ 		INSTALL_MOD_PATH="$pkgdir" 		INSTALL_MOD_STRIP=1 		INSTALL_DTBS_PATH="$pkgdir"/boot/dtbs-tmp
 
-	mkdir -p ""/boot/dtbs/qcom
-	cp -r ""/boot/dtbs-tmp/qcom/sm8150* ""/boot/dtbs/qcom
-	rm -rf ""/boot/dtbs-tmp
+	mkdir -p "$pkgdir"/boot/dtbs/qcom
+	cp -r "$pkgdir"/boot/dtbs-tmp/qcom/sm8150* "$pkgdir"/boot/dtbs/qcom
+	rm -rf "$pkgdir"/boot/dtbs-tmp
 
-	rm -f ""/lib/modules/*/build ""/lib/modules/*/source
+	rm -f "$pkgdir"/lib/modules/*/build "$pkgdir"/lib/modules/*/source
 
-	install -D ""/include/config/kernel.release 		""/usr/share/kernel//kernel.release
+	install -D "$builddir"/include/config/kernel.release 		"$pkgdir"/usr/share/kernel/$_flavor/kernel.release
 }
 
 sha512sums="
