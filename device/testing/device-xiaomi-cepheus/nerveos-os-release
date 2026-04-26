@@ -1,0 +1,7 @@
+ID=nerveos
+ID_LIKE="alpine postmarketos"
+NAME="NerveOS"
+PRETTY_NAME="NerveOS"
+VERSION_ID=1
+HOME_URL="https://github.com/Vyndiktus/pmaports"
+BUG_REPORT_URL="https://github.com/Vyndiktus/pmaports/issues"

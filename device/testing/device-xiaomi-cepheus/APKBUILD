@@ -1,0 +1,36 @@
+# Maintainer: Alexey Minnekhanov <alexeymin@postmarketos.org>
+# Reference: <https://postmarketos.org/devicepkg>
+pkgname=device-xiaomi-cepheus
+pkgdesc="Xiaomi Mi 9 (NerveOS)"
+pkgver=1
+pkgrel=3
+url="https://postmarketos.org"
+license="MIT"
+arch="aarch64"
+options="!check !archcheck"
+depends="
+	linux-postmarketos-qcom-sm8150
+	mkbootimg
+	postmarketos-base
+"
+makedepends="devicepkg-dev"
+source="deviceinfo
+	nerveos-os-release
+	nerveos-motd"
+
+build() {
+	devicepkg_build  
+}
+
+package() {
+	devicepkg_package  
+	# NerveOS branding: override os-release and install motd
+	install -Dm644 "/nerveos-os-release" "/etc/os-release"
+	install -Dm644 "/nerveos-motd" "/etc/motd"
+}
+
+sha512sums="
+4ab6afe0c963ce2dc28efd9a5e97c35bd59a5d36259777456efd02b9ddd61612957b9ac150397b5a724015d4a036acfe074a9bb32324b46fd2c3f1d386045104  deviceinfo
+e1bf0c166403c909c12db22b59ff3e0a3c6374145db851a7d3e1878b1c0d1736721339cd74d4014a36d6f7a9ccb12af57f1f1d7adde2deea6acaa41155f3ba6a  nerveos-os-release
+c351ffd3ad4bc7409b032450ef22ef8787c980578a8532b4be99cc7d33ee680bffae541edb3cbd06f9b169c34529cc264aa34257b58ccb299a2e445f6b64b895  nerveos-motd
+"
