@@ -39,3 +39,6 @@ deviceinfo_rootfs_image_sector_size="4096"
 deviceinfo_usb_idVendor="0x2717"
 # Mi/Redmi series (RNDIS)
 deviceinfo_usb_idProduct="0xff80"
+
+# Static USB network host MAC (prevents Windows from seeing new adapter on USB reconnect)
+deviceinfo_usb_network_host_addr="de:ad:be:ef:00:01"
