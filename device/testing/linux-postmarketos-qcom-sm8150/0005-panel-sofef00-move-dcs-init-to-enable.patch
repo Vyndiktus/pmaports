@@ -1,37 +1,22 @@
 --- a/drivers/gpu/drm/panel/panel-samsung-sofef00.c
 +++ b/drivers/gpu/drm/panel/panel-samsung-sofef00.c
-@@ -97,12 +97,21 @@ static int sofef00_panel_prepare(struct drm_panel *panel)
-
+@@ -97,6 +97,14 @@
+ 
  	sofef00_panel_reset(ctx);
-
--	ret = sofef00_panel_on(ctx);
--	if (ret < 0) {
--		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
--		return ret;
--	}
--
- 	return 0;
- }
-
+ 
++	return 0;
++}
++
 +static int sofef00_panel_enable(struct drm_panel *panel)
 +{
 +	struct sofef00_panel *ctx = to_sofef00_panel(panel);
 +	int ret;
 +
-+	ret = sofef00_panel_on(ctx);
-+	if (ret < 0) {
-+		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
-+		return ret;
-+	}
-+
-+	return 0;
-+}
-+
- static int sofef00_panel_unprepare(struct drm_panel *panel)
- {
- 	struct sofef00_panel *ctx = to_sofef00_panel(panel);
-@@ -149,6 +158,7 @@ static int sofef00_panel_get_modes(struct drm_panel *panel, struct drm_connector
-
+ 	ret = sofef00_panel_on(ctx);
+ 	if (ret < 0) {
+ 		gpiod_set_value_cansleep(ctx->reset_gpio, 1);
+@@ -150,6 +158,7 @@
+ 
  static const struct drm_panel_funcs sofef00_panel_panel_funcs = {
  	.prepare = sofef00_panel_prepare,
 +	.enable = sofef00_panel_enable,
